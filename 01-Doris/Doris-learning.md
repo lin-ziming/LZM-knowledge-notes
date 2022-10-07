@@ -212,3 +212,37 @@ show proc '/backends'; 或 show proc '/backends'\G;
 ```
 
 Alive为true表示该BE节点存活。
+
+# Doris时区问题
+
+## 查看时区
+
+`show variables like '%time_zone%';`
+结果如下：
+
+| Variable_name    | Value         |
+| ---------------- | ------------- |
+| system_time_zone | Europe/London |
+| time_zone        | Europe/London |
+
+system_time_zone 无法修改，自动跟随系统
+
+## 修改时区
+
+1.单会话修改
+`set time_zone='Asia/Shanghai';`
+**2.全局修改**
+`set global time_zone='Asia/Shanghai';`
+再查看时区
+
+| Variable_name    | Value         |
+| ---------------- | ------------- |
+| system_time_zone | Europe/London |
+| time_zone        | Asia/Shanghai |
+
+
+
+# 时间日期写入Doris的一些细节
+
+1. 把日期用String类型写入Doris不受时区影响。
+2. 更改时区后，已经插入Doris的数据不受时区更改影响。
