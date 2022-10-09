@@ -1,0 +1,14 @@
+#! /bin/bash
+#1.若无参数传入，则执行jps
+if [ $# -eq 0 ]; then
+    for host in hadoop102 hadoop103 hadoop104;do
+        echo "============================$host============================="
+        ssh $host jps
+    done
+    exit
+fi
+#2.执行传入命令
+for host in hadoop102 hadoop103 hadoop104; do
+    echo "============================$host============================="
+    ssh $host "$*"
+done

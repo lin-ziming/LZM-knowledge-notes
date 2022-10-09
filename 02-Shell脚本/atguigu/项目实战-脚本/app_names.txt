@@ -1,0 +1,7 @@
+#com.atguigu.app.dim.DimApp
+#com.atguigu.app.dwd.log.BaseLogApp
+#com.atguigu.app.dwd.log.DwdTrafficUniqueVisitorDetail
+#com.atguigu.app.dwd.log.Dwd_03_DwdTrafficUserJumpDetail
+#com.atguigu.app.dwd.DwdTradeCartAdd
+#com.atguigu.app.dws.Dws_DwsTrafficSourceKeywordPageViewWindow
+com.atguigu.app.dws.DwsTrafficScVcChArIsNewPageViewWindow

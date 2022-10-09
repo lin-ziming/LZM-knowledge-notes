@@ -1,0 +1,51 @@
+#!/bin/bash
+#自己写的脚本，用于启动/停止kibana
+#TODO: 希望把重复的命令抽取成字符串get_id和log_dir，但是失败，不知如何解决
+if(($#<1)); then
+    echo 请输入单个start或stop参数！
+    exit
+fi
+get_pid="ps -ef | grep '.*node/bin/node.*src/cli'|grep -v grep | awk '{print \$2}'"
+log_dir="/opt/module/kibana/kibana.log"
+
+case $1 in
+"start")
+    # 启动前保证没有kibana进程在运行
+    if [ `"$get_pid"` ]; then
+        echo "正在关闭kibana..."
+        `"$get_pid"`| xargs kill
+        echo "kibana已停止"
+    fi
+    echo "正在启动kibana..."
+    nohup /opt/module/kibana/bin/kibana > $log_dir 2>&1 &
+
+    pid=$("$get_pid")
+    [ $pid ] || echo "启动失败"
+
+    sleep 6s
+    # awk按"号分割; NF:列的个数;
+    # ~ /REG/ 正则匹配
+    # if判断，如果NF-1列含有“Server running at”，则按照空格切,存入tA数组，
+    # 取数组tA的最后一个(数组下标范围1-length)
+    awk -F '"' \
+    '{ if($(NF-1) ~ /Server running at/) \
+    { split($(NF-1),tA," "); \
+    print("日志路径：$log_dir"); \
+    print("kibana启动成功,请访问:\n"tA[length(tA)]) } \
+    }' \
+    $log_dir
+
+    ;;
+"stop")
+    echo "正在关闭kibana..."
+    `"$get_pid"`| xargs kill
+    sleep 3s
+    pid=$("$get_pid")
+    [ $pid ] && echo "关闭失败" || echo "kibana已关闭"
+    ;;
+*)
+	echo "参数输入错误,必须是start/stop..."
+    ;;
+esac
+
+

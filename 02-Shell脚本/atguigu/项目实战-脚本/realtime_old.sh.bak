@@ -1,0 +1,31 @@
+#!/bin/bash
+read -p "请输入你要运行的jar包： " jar_name
+flink=/opt/module/flink-1.13.6-yarn/bin/flink
+jar=/opt/edu_realtime/$jar_name
+apps=(
+#com.atguigu.app.dim.DimApp
+#com.atguigu.app.dwd.log.BaseLogApp
+#com.atguigu.app.dwd.log.DwdTrafficUniqueVisitorDetail
+#com.atguigu.app.dwd.log.Dwd_03_DwdTrafficUserJumpDetail
+com.atguigu.app.dwd.DwdTradeCartAdd
+#com.atguigu.app.dws.Dws_DwsTrafficSourceKeywordPageViewWindow
+#com.atguigu.app.dws.DwsTrafficScVcChArIsNewPageViewWindow
+
+)
+
+running_apps=`$flink list 2>/dev/null | awk  '/RUNNING/ {print \$(NF-1)}'`
+
+for app in ${apps[*]} ; do
+    app_name=`echo $app | awk -F. '{print \$NF}'`
+
+    if [[ "${running_apps[@]}" =~ "$app_name" ]]; then
+        echo "$app_name 已经启动,无序重复启动...."
+    else
+         echo "启动应用: $app_name"
+        $flink run -d -c $app $jar
+    fi
+done
+
+
+
+

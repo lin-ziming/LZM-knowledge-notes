@@ -1,0 +1,37 @@
+#! /bin/bash
+#xsync hadoop /opt/module/java a.txt
+#1、判断参数是否传入
+if [ $# -lt 1 ]
+then
+	echo "必须传入分发的目录/文件..."
+	exit
+fi
+#2、遍历待分发的所有目录和文件
+# $? : 判断上一个指令执行是否正确
+# $# ：获取脚本参数个数
+# $@ : 获取脚本所有参数,如果是用""包裹,还是将所有参数当做一个个的个体处理
+# $* : 获取脚本所有参数,如果是用""包裹,还是将所有参数当做一个整体处理
+# $@与$*如果没有用""包裹,表示的意思是一样的,都是将所有参数当做一个个的个体处理
+# $N : 获取脚本第N个参数
+for f in $*
+do
+	#3、判断当前待分发的目录/文件存在
+	# -e: 判断目录/文件是否存在
+	# -f: 判断是否为文件
+	# -d: 判断是否为目录
+	if [ -e $f ]
+	then
+		#4、获取当前待分发的目录/文件的父目录
+		pdir=$(cd $(dirname $f);pwd)
+		fname=$(basename $f)
+		#5、遍历主机
+		for host in hadoop102 hadoop103 hadoop104
+		do
+			echo "========================$host======================="
+			#创建父目录
+			ssh $host "mkdir -p $pdir"
+			#6、分发
+			rsync -av $pdir/$fname $host:$pdir
+		done
+	fi
+done
