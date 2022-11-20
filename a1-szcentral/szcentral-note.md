@@ -56,3 +56,13 @@ CREATE TABLE `rule_instance_definition` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 ```
+
+# 数据量、资源估算
+
+## 5.6 实时项目数据计算
+
+### 5.6.1 跑实时任务，怎么分配内存和CPU资源
+
+128m数据对应1g内存。
+1个Kafka分区对应1个CPU。
+1CU  = 1CPU + 4g内存
